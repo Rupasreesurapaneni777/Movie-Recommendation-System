@@ -1,90 +1,197 @@
-# Movie Recommendation System
+# 🎬 Movie Recommendation System
 
-This project is a movie recommendation system built with Streamlit and powered by a machine learning model. It recommends movies based on a selected title using cosine similarity and displays movie posters fetched from the TMDB API.
->YouTube tutorial [HERE](https://youtu.be/i-B_I2DGIAI)
+A **Content-Based Movie Recommendation System** built using Python, Machine Learning, and Streamlit. The application recommends **10 similar movies** based on the movie selected by the user and displays their posters using the **TMDB API**.
 
->Dataset is [HERE](https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata)
+## 📌 Overview
 
->Some files are not available on GitHub due to the large file size. you can get it [HERE](https://huggingface.co/sujoy0011/Movie-Recommendation-System/tree/main)
+This project helps users discover movies similar to their favorite movies.
 
-## Table of Contents
+The recommendation system analyzes movie information such as:
 
-- [Overview](#overview)
-- [Theory of Recommendation Systems](#theory-of-recommendation-systems)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Dataset](#dataset)
-- [Model](#model)
-- [Results](#results)
-- [Contributing](#contributing)
-- [License](#license)
+* Overview
+* Genres
+* Keywords
+* Cast
+* Director
 
-## Overview
+These features are converted into numerical vectors using **CountVectorizer**, and **Cosine Similarity** is used to identify movies with similar content.
 
-The movie recommendation system helps users discover movies similar to their favorites. By selecting a movie from the list, users receive a list of top 10 recommended movies along with their posters. This project leverages machine learning techniques to analyze the features of movies and find similarities between them. It uses the TMDB API to fetch and display movie posters, enhancing the user experience by providing visual context for the recommendations. The system is built with Streamlit, providing an interactive and user-friendly interface for users to explore movie recommendations easily.
+The application is built using **Streamlit**, which provides a simple and interactive web interface.
 
-## Theory of Recommendation Systems
+## ✨ Features
 
-### What is a Recommendation System?
+* 🎬 Select a movie from the dropdown
+* 🤖 Get Top 10 similar movie recommendations
+* 🖼️ Display movie posters
+* 🔍 Content-based recommendation system
+* 📊 Uses Cosine Similarity
+* 🌐 Interactive Streamlit web application
+* 🎞️ Movie posters fetched using TMDB API
 
-A recommendation system is a subclass of information filtering systems that seek to predict the rating or preference a user would give to an item. They are widely used in various applications like movie recommendations, product recommendations, and content recommendations.
+## 🛠️ Technologies Used
 
-### Types of Recommendation Systems
+* Python
+* Pandas
+* Scikit-learn
+* Streamlit
+* CountVectorizer
+* Cosine Similarity
+* TMDB API
+* Requests
 
-1. **Content-Based Filtering**: This method recommends items similar to those a user liked in the past. It relies on the attributes of the items and a profile of the user's preferences.
+## 📂 Dataset
 
-2. **Collaborative Filtering**: This method recommends items based on the preferences of similar users. It doesn't require the attributes of the items and instead focuses on user-item interactions.
+The project uses the **TMDB 5000 Movie Dataset**.
 
-3. **Hybrid Methods**: These methods combine content-based and collaborative filtering to provide more accurate recommendations.
-   
-    ![The-recommendation-system-types](https://github.com/user-attachments/assets/b08f4f84-9210-4dfb-9734-860b353a3da7)
+Main dataset files:
+
+```text
+tmdb_5000_movies.csv
+tmdb_5000_credits.csv
+```
+
+Dataset:
+
+[TMDB Movie Metadata – Kaggle](https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata)
+
+## ⚙️ How It Works
+
+1. Load movie and credits datasets.
+2. Merge both datasets using movie IDs.
+3. Extract important movie features such as genres, keywords, cast, director, and overview.
+4. Combine these features into a single `tags` column.
+5. Convert movie tags into vectors using **CountVectorizer**.
+6. Calculate similarity between movies using **Cosine Similarity**.
+7. Select the movies with the highest similarity scores.
+8. Display the Top 10 recommended movies.
+9. Fetch and display movie posters using the **TMDB API**.
+
+## 📦 Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Rupasreesurapaneni777/Movie-Recommendation-System.git
+```
+
+### 2. Open the project folder
+
+```bash
+cd Movie-Recommendation-System
+```
+
+### 3. Create a virtual environment
+
+```bash
+python -m venv .venv
+```
+
+### 4. Activate the virtual environment
+
+**Windows:**
+
+```bash
+.venv\Scripts\activate
+```
+
+### 5. Install required packages
+
+```bash
+pip install -r requirements.txt
+```
+
+Or:
+
+```bash
+pip install streamlit pandas scikit-learn requests
+```
+
+## ▶️ Run the Application
+
+Run:
+
+```bash
+python -m streamlit run app.py
+```
+
+Then open:
+
+```text
+http://localhost:8501
+```
+
+in your browser.
+
+## 🖥️ Output
+
+The user selects a movie from the dropdown and clicks **Recommend Movies**.
+
+The system displays the **Top 10 similar movies along with their posters**.
+
+### Example: Avatar Recommendations
+
+![Movie Recommendation System Output](output.png)
+
+The application successfully recommends movies similar to the selected movie using content-based filtering and cosine similarity.
+
+## 📁 Project Structure
+
+```text
+Movie-Recommendation-System/
+│
+├── app.py
+├── Movie_Recommendation_System.ipynb
+├── tmdb_5000_movies.csv
+├── tmdb_5000_credits.csv
+├── requirements.txt
+├── output.png
+├── README.md
+└── .gitignore
+```
+
+## 🧠 Machine Learning Technique
+
+### Content-Based Filtering
+
+The recommendation engine uses **Content-Based Filtering**.
+
+It recommends movies based on similarities between movie features rather than user ratings.
+
+### CountVectorizer
+
+CountVectorizer converts movie information into numerical feature vectors.
 
 ### Cosine Similarity
 
-In this project, we use cosine similarity to measure the similarity between movie titles. Cosine similarity is a metric used to measure how similar two vectors are. It is calculated as the cosine of the angle between two vectors projected in a multi-dimensional space. For movie recommendation, the vectors represent movie features, and the similarity score indicates how alike two movies are.
+Cosine Similarity measures how similar two movie vectors are.
 
-## Installation
+Movies with higher similarity scores are selected as recommendations.
 
-1. Clone the repository:
-    ```bash
-    git clone[https://github.com/Rupasreesurapaneni777/Movie-Recommendation-System.git]
-    cd movie-recommendation-system
-    ```
+## 📊 Result
 
-2. Install the required packages:
-    ```bash
-    pip install -r requirements.txt
-    ```
+The Movie Recommendation System successfully:
 
-## Usage
+* Processes movie metadata
+* Finds similar movies
+* Generates Top 10 recommendations
+* Displays movie posters
+* Provides an interactive web interface
 
-1. Run the Streamlit app:
-    ```bash
-    streamlit run app.py
-    ```
+## 🔮 Future Improvements
 
-2. Open your web browser and go to [http://localhost:8501/]
+* Add movie ratings
+* Add movie descriptions
+* Add release year and genres
+* Add trailer links
+* Improve movie search
+* Add collaborative filtering
+* Deploy the application online
 
-3. Select a movie from the dropdown list and click "Recommend" to get the top 10 recommended movies along with their posters.
+## 📚 References
 
-## Dataset
+* [TMDB Dataset](https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata)
+* [YouTube Tutorial](https://youtu.be/i-B_I2DGIAI)
 
-The dataset used for this project contains information about movies, including their titles and IDs. It is processed and stored in `movie_data.pkl`. The dataset is used to calculate the cosine similarity between movies.
+## 📄 License
 
-## Model
-
-The model for recommending movies is based on cosine similarity. Cosine similarity is used to measure the similarity between movie titles. The model computes the similarity scores and suggests the top 10 similar movies based on the selected movie title.
-
-## Results
-
-The system provides the top 10 recommended movies for any selected movie title. It also fetches and displays the posters of these recommended movies using the TMDB API.
-
-![Screenshot 2024-07-12 103743](https://github.com/user-attachments/assets/fbc357a1-a6e6-472a-892b-95fe96767743)
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License**.
