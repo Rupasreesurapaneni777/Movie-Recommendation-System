@@ -1,48 +1,105 @@
-import streamlit as st
+import ast
 import pandas as pd
-import requests
-import pickle
+import streamlit as st
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-# Load the processed data and similarity matrix
-with open('movie_data.pkl', 'rb') as file:
-    movies, cosine_sim = pickle.load(file)
+st.set_page_config(page_title="Movie Recommendation System", page_icon="🎬", layout="wide")
 
-# Function to get movie recommendations
-def get_recommendations(title, cosine_sim=cosine_sim):
-    idx = movies[movies['title'] == title].index[0]
-    sim_scores = list(enumerate(cosine_sim[idx]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    sim_scores = sim_scores[1:11]  # Get top 10 similar movies
-    movie_indices = [i[0] for i in sim_scores]
-    return movies[['title', 'id']].iloc[movie_indices]
 
-# Fetch movie poster from TMDB API
-def fetch_poster(movie_indices):
-    api_key = '7b995d3c6fd91a2284b4ad8cb390c7b8'  # Replace with your TMDB API key
-    url = f'https://api.themoviedb.org/3/movie/{movie_indices}?api_key={api_key}'
-    response = requests.get(url)
-    data = response.json()
-    poster_path = data['poster_path']
-    full_path = f"https://image.tmdb.org/t/p/w500{poster_path}"
-    return full_path
+def parse_names(value, limit=None):
+    if not isinstance(value, str):
+        return []
+    try:
+        items = ast.literal_eval(value)
+    except (ValueError, SyntaxError):
+        return []
 
-# Streamlit UI
-st.title("Movie Recommendation System")
+    names = []
+    for item in items[:limit] if limit else items:
+        name = item.get("name") if isinstance(item, dict) else None
+        if name:
+            names.append(name.replace(" ", ""))
+    return names
 
-selected_movie = st.selectbox("Select a movie:", movies['title'].values)
 
-if st.button('Recommend'):
-    recommendations = get_recommendations(selected_movie)
-    st.write("Top 10 recommended movies:")
+def parse_director(value):
+    if not isinstance(value, str):
+        return []
+    try:
+        items = ast.literal_eval(value)
+    except (ValueError, SyntaxError):
+        return []
 
-    # Create a 2x5 grid layout
-    for i in range(0, 10, 5):  # Loop over rows (2 rows, 5 movies each)
-        cols = st.columns(5)  # Create 5 columns for each row
-        for col, j in zip(cols, range(i, i+5)):
-            if j < len(recommendations):
-                movie_title = recommendations.iloc[j]['title']
-                movie_indices = recommendations.iloc[j]['id']
-                poster_url = fetch_poster(movie_indices) 
-                with col:
-                    st.image(poster_url, width=130)
-                    st.write(movie_title)
+    for item in items:
+        if isinstance(item, dict) and item.get("job") == "Director":
+            name = item.get("name")
+            return [name.replace(" ", "")] if name else []
+    return []
+
+
+@st.cache_resource(show_spinner="Preparing movie data...")
+def load_data():
+    movies = pd.read_csv("tmdb_5000_movies.csv")
+    credits = pd.read_csv("tmdb_5000_credits.csv")
+
+    movies = movies[["id", "title", "overview", "genres", "keywords"]].copy()
+    credits = credits[["movie_id", "cast", "crew"]].copy()
+
+    data = movies.merge(credits, left_on="id", right_on="movie_id", how="inner")
+
+    data["overview"] = data["overview"].fillna("").astype(str)
+    data["genres"] = data["genres"].apply(parse_names)
+    data["keywords"] = data["keywords"].apply(parse_names)
+    data["cast"] = data["cast"].apply(lambda x: parse_names(x, limit=3))
+    data["crew"] = data["crew"].apply(parse_director)
+
+    data["tags"] = (
+        data["overview"]
+        + " " + data["genres"].apply(" ".join)
+        + " " + data["keywords"].apply(" ".join)
+        + " " + data["cast"].apply(" ".join)
+        + " " + data["crew"].apply(" ".join)
+    ).str.lower()
+
+    data = data[["id", "title", "tags"]].reset_index(drop=True)
+
+    vectorizer = CountVectorizer(max_features=5000, stop_words="english")
+    vectors = vectorizer.fit_transform(data["tags"].astype(str))
+    return data, vectors
+
+
+def recommend(title, data, vectors, count=10):
+    matches = data.index[data["title"].astype(str) == str(title)].tolist()
+    if not matches:
+        return []
+
+    movie_index = matches[0]
+    scores = cosine_similarity(vectors[movie_index], vectors).ravel()
+    ranked = scores.argsort()[::-1]
+    ranked = [i for i in ranked if i != movie_index][:count]
+    return data.iloc[ranked]["title"].astype(str).tolist()
+
+
+st.title("🎬 Movie Recommendation System")
+st.write("Choose a movie and get 10 similar movie recommendations.")
+
+try:
+    movies, vectors = load_data()
+except FileNotFoundError as exc:
+    st.error(f"Required CSV file is missing: {exc.filename}")
+    st.stop()
+except Exception as exc:
+    st.error(f"Could not prepare movie data: {exc}")
+    st.stop()
+
+selected_movie = st.selectbox("Select a movie", movies["title"].astype(str).tolist())
+
+if st.button("🎯 Recommend Movies"):
+    recommendations = recommend(selected_movie, movies, vectors)
+    if recommendations:
+        st.subheader(f"Movies similar to {selected_movie}")
+        for number, movie in enumerate(recommendations, start=1):
+            st.write(f"{number}. {movie}")
+    else:
+        st.warning("No recommendations found for this movie.")
