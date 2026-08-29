@@ -2,3 +2,4 @@ import pickle
 
 pickle.dump(movies, open('movie_data.pkl', 'wb'))
 pickle.dump(similarity, open('similarity.pkl', 'wb'))
+
