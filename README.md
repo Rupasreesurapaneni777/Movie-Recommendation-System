@@ -1,92 +1,116 @@
 # 🎬 Movie Recommendation System
 
-A **Content-Based Movie Recommendation System** built using Python, Machine Learning, and Streamlit. The application recommends **10 similar movies** based on the movie selected by the user and displays their posters using the **TMDB API**.
+A **Content-Based Movie Recommendation System** built with **Python, Machine Learning, and Streamlit**. The application recommends the **Top 10 movies similar to a user-selected movie** based on movie metadata and displays their posters using the **TMDB API**.
 
-## 📌 Overview
+## 📌 Project Overview
 
-This project helps users discover movies similar to their favorite movies.
+The Movie Recommendation System helps users discover movies similar to their favorite titles.
 
-The recommendation system analyzes movie information such as:
+The system analyzes movie metadata including:
 
-* Overview
+* Movie Overview
 * Genres
 * Keywords
 * Cast
 * Director
 
-These features are converted into numerical vectors using **CountVectorizer**, and **Cosine Similarity** is used to identify movies with similar content.
+These features are combined into a single text representation and transformed into numerical vectors using **CountVectorizer**. **Cosine Similarity** is then used to calculate the similarity between movies and generate recommendations.
 
-The application is built using **Streamlit**, which provides a simple and interactive web interface.
+The application is developed using **Streamlit** to provide a simple and interactive user interface.
 
-## ✨ Features
+## ✨ Key Features
 
-* 🎬 Select a movie from the dropdown
-* 🤖 Get Top 10 similar movie recommendations
+* 🎬 Select a movie from an interactive dropdown
+* 🤖 Generate **Top 10 similar movie recommendations**
 * 🖼️ Display movie posters
-* 🔍 Content-based recommendation system
-* 📊 Uses Cosine Similarity
+* 🔍 Content-based recommendation approach
+* 📊 Cosine Similarity for recommendation ranking
 * 🌐 Interactive Streamlit web application
-* 🎞️ Movie posters fetched using TMDB API
+* 🎞️ Movie posters retrieved through the TMDB API
 
-## 🛠️ Technologies Used
+## 🛠️ Technologies & Tools
 
-* Python
-* Pandas
-* Scikit-learn
-* Streamlit
-* CountVectorizer
-* Cosine Similarity
-* TMDB API
-* Requests
+* **Programming Language:** Python
+* **Data Processing:** Pandas
+* **Machine Learning:** Scikit-learn
+* **Vectorization:** CountVectorizer
+* **Similarity Algorithm:** Cosine Similarity
+* **Web Framework:** Streamlit
+* **API:** TMDB API
+* **HTTP Requests:** Requests
 
 ## 📂 Dataset
 
-The project uses the **TMDB 5000 Movie Dataset**.
+This project uses the **TMDB 5000 Movie Dataset**, containing movie metadata and credits.
 
-Main dataset files:
+### Dataset Files
 
 ```text
 tmdb_5000_movies.csv
 tmdb_5000_credits.csv
 ```
 
-Dataset:
+**Dataset Source:**
+TMDB Movie Metadata – Kaggle
 
-[TMDB Movie Metadata – Kaggle](https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata)
+## ⚙️ Recommendation Workflow
 
-## ⚙️ How It Works
+```text
+Movie Dataset
+      ↓
+Data Cleaning & Preprocessing
+      ↓
+Merge Movie & Credits Data
+      ↓
+Feature Extraction
+      ↓
+Create Movie Tags
+      ↓
+CountVectorizer
+      ↓
+Cosine Similarity
+      ↓
+Top 10 Similar Movies
+      ↓
+TMDB API
+      ↓
+Movie Posters
+```
 
-1. Load movie and credits datasets.
-2. Merge both datasets using movie IDs.
-3. Extract important movie features such as genres, keywords, cast, director, and overview.
-4. Combine these features into a single `tags` column.
-5. Convert movie tags into vectors using **CountVectorizer**.
-6. Calculate similarity between movies using **Cosine Similarity**.
-7. Select the movies with the highest similarity scores.
-8. Display the Top 10 recommended movies.
-9. Fetch and display movie posters using the **TMDB API**.
+### Step-by-Step Process
 
-## 📦 Installation
+1. Load the movie and credits datasets.
+2. Merge the datasets using the movie ID.
+3. Extract relevant features such as genres, keywords, cast, director, and overview.
+4. Combine the selected features into a `tags` column.
+5. Convert the movie tags into numerical vectors using **CountVectorizer**.
+6. Calculate movie-to-movie similarity using **Cosine Similarity**.
+7. Rank movies based on similarity scores.
+8. Select the **Top 10 similar movies**.
+9. Fetch movie posters using the **TMDB API**.
+10. Display the recommendations through the Streamlit interface.
 
-### 1. Clone the repository
+## 📦 Installation & Setup
+
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Rupasreesurapaneni777/Movie-Recommendation-System.git
 ```
 
-### 2. Open the project folder
+### 2. Navigate to the Project Directory
 
 ```bash
 cd Movie-Recommendation-System
 ```
 
-### 3. Create a virtual environment
+### 3. Create a Virtual Environment
 
 ```bash
 python -m venv .venv
 ```
 
-### 4. Activate the virtual environment
+### 4. Activate the Virtual Environment
 
 **Windows:**
 
@@ -94,45 +118,51 @@ python -m venv .venv
 .venv\Scripts\activate
 ```
 
-### 5. Install required packages
+### 5. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Or:
+Alternatively:
 
 ```bash
 pip install streamlit pandas scikit-learn requests
 ```
 
+## 🔑 TMDB API Configuration
+
+The application uses the **TMDB API** to retrieve movie posters.
+
+Create a TMDB API key and configure it in the application as required by `app.py`.
+
+**Important:** Do not upload your API key directly to GitHub. Store sensitive credentials using environment variables or another secure configuration method.
+
 ## ▶️ Run the Application
 
-Run:
+Start the Streamlit application using:
 
 ```bash
 python -m streamlit run app.py
 ```
 
-Then open:
+The application will be available at:
 
 ```text
 http://localhost:8501
 ```
 
-in your browser.
-
-## 🖥️ Output
+## 🖥️ Application Output
 
 The user selects a movie from the dropdown and clicks **Recommend Movies**.
 
-The system displays the **Top 10 similar movies along with their posters**.
+The application then displays the **Top 10 similar movies along with their posters**.
 
-### Example: Avatar Recommendations
+### Example
 
 ![Movie Recommendation System Output](output.png)
 
-The application successfully recommends movies similar to the selected movie using content-based filtering and cosine similarity.
+The system successfully generates movie recommendations using **content-based filtering and cosine similarity**.
 
 ## 📁 Project Structure
 
@@ -149,48 +179,47 @@ Movie-Recommendation-System/
 └── .gitignore
 ```
 
-## 🧠 Machine Learning Technique
+## 🧠 Machine Learning Approach
 
 ### Content-Based Filtering
 
-The recommendation engine uses **Content-Based Filtering**.
-
-It recommends movies based on similarities between movie features rather than user ratings.
+This project uses **Content-Based Filtering**, where recommendations are generated based on similarities between movie attributes rather than user ratings.
 
 ### CountVectorizer
 
-CountVectorizer converts movie information into numerical feature vectors.
+`CountVectorizer` converts the combined movie metadata into numerical feature vectors that can be processed by the recommendation algorithm.
 
 ### Cosine Similarity
 
-Cosine Similarity measures how similar two movie vectors are.
+Cosine Similarity measures the similarity between movie vectors. Movies with higher similarity scores are ranked higher and selected as recommendations.
 
-Movies with higher similarity scores are selected as recommendations.
+## 📊 Results
 
-## 📊 Result
+The system is capable of:
 
-The Movie Recommendation System successfully:
+* Processing movie metadata
+* Extracting relevant movie features
+* Calculating movie similarities
+* Generating Top 10 recommendations
+* Retrieving movie posters through an API
+* Providing an interactive recommendation interface
 
-* Processes movie metadata
-* Finds similar movies
-* Generates Top 10 recommendations
-* Displays movie posters
-* Provides an interactive web interface
+## 🚀 Future Enhancements
 
-## 🔮 Future Improvements
-
-* Add movie ratings
-* Add movie descriptions
-* Add release year and genres
-* Add trailer links
-* Improve movie search
-* Add collaborative filtering
-* Deploy the application online
+* ⭐ Add movie ratings
+* 📝 Display detailed movie descriptions
+* 🎭 Add genre and release-year filters
+* 🎬 Integrate movie trailer links
+* 🔎 Improve movie search functionality
+* 🤝 Implement collaborative filtering
+* ☁️ Deploy the application online
 
 ## 📚 References
 
-* [TMDB Dataset](https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata)
-* [YouTube Tutorial](https://youtu.be/i-B_I2DGIAI)
+* TMDB Movie Dataset – Kaggle
+* Streamlit Documentation
+* Scikit-learn Documentation
+* TMDB API Documentation
 
 ## 📄 License
 
